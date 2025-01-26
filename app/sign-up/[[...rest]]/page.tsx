@@ -1,5 +1,3 @@
-"use client";
-
 import { SignUp } from "@clerk/nextjs";
 
 export default function Page() {
@@ -12,7 +10,12 @@ export default function Page() {
         justifyContent: "center",
       }}
     >
-      <SignUp path="/sign-up" routing="path" signInUrl="/sign-in" />
+      <SignUp
+        path="/sign-up"
+        routing="path"
+        signInUrl="/sign-in"
+        afterSignUpUrl="/onboarding" 
+      />
     </div>
   );
 }
