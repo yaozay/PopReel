@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 export default function Home() {
@@ -8,11 +10,10 @@ export default function Home() {
         Your platform for sharing and discovering amazing content.
       </p>
       <div className="mt-6">
-        <Link
-          href="/sign-up"
-          className="px-6 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-        >
-          Get Started
+        <Link href="/sign-up">
+          <button className="px-6 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600">
+            Get Started
+          </button>
         </Link>
       </div>
     </div>
