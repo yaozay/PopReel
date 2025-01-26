@@ -1,8 +1,8 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/db";
 
 export async function getOrCreateUser() {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) return null;
 
   let user = await prisma.user.findUnique({

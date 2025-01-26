@@ -11,6 +11,8 @@
   "dependencies": {
     "@clerk/nextjs": "^6.10.2",
     "@prisma/client": "^6.2.1",
+    "aws": "^0.0.3-2",
+    "aws-sdk": "^2.1692.0",
     "next": "15.1.6",
     "prisma": "^6.2.1",
     "react": "^19.0.0",
@@ -18,6 +20,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/aws-sdk": "^0.0.42",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -1,10 +1,10 @@
 // app/profile/page.tsx
-import auth from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/db";
 import { redirect } from "next/navigation";
 
 export default async function ProfilePage() {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     redirect("/sign-in");
   }
