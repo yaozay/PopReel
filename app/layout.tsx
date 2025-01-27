@@ -2,6 +2,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import React from "react";
+import NavBar from "@/components/NavBar"; // Import NavBar component
 
 export const metadata = {
   title: "PopReel",
@@ -13,7 +14,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <ClerkProvider>
-          {children}
+          {/* Navigation Bar */}
+          <NavBar />
+          {/* Main Content */}
+          <main>{children}</main>
         </ClerkProvider>
       </body>
     </html>
