@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import AWS from "aws-sdk";
 
+// Configure AWS S3
 const s3 = new AWS.S3({
   region: process.env.AWS_REGION,
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
