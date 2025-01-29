@@ -8,6 +8,7 @@ export default function Page() {
         minHeight: "100vh",
         alignItems: "center",
         justifyContent: "center",
+        background: "linear-gradient(135deg, #0f172a, #1e293b)",
       }}
     >
       <SignUp

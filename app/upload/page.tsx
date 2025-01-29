@@ -2,67 +2,72 @@
 
 import React, { useState } from "react";
 
-const UploadPage = () => {
+const UploadPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [uploadStatus, setUploadStatus] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setFile(event.target.files[0]);
     }
   };
 
   const handleUpload = async () => {
     if (!file) {
-      alert("Please select a file to upload");
+      alert("Please select a file to upload.");
       return;
     }
 
     try {
-      const response = await fetch(
-        `/api/uploadurl?fileName=${file.name}&fileType=${file.type}`
-      );
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to get upload URL");
-      }
+      setUploading(true);
 
-      const { uploadUrl } = data;
+      const formData = new FormData();
+      formData.append("video", file);
 
-      const uploadResponse = await fetch(uploadUrl, {
-        method: "PUT",
-        body: file,
+      // Using fetch for testing
+      const response = await fetch("http://localhost:3000/upload", {
+        method: "POST",
+        body: formData,
         headers: {
-          "Content-Type": file.type,
+          "Content-Type": "multipart/form-data",
         },
       });
 
-      if (uploadResponse.ok) {
-        setUploadStatus("Upload successful!");
+      if (response.ok) {
+        setSuccessMessage("Upload successful!");
       } else {
-        throw new Error("Failed to upload file");
+        console.error("Upload failed:", response.statusText);
       }
     } catch (error) {
-      console.error("Error uploading file:", error);
-      setUploadStatus("Upload failed. Please try again.");
+      console.error("Upload error:", error);
+      alert("An error occurred during the upload. Please try again.");
+    } finally {
+      setUploading(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">Upload File</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4">
+      <h1 className="text-2xl font-bold mb-4">Upload Your Video</h1>
       <input
         type="file"
+        accept="video/*"
         onChange={handleFileChange}
-        className="mb-4 border border-gray-300 p-2"
+        className="mb-4"
       />
       <button
         onClick={handleUpload}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        disabled={!file || uploading}
+        className={`px-4 py-2 rounded ${
+          uploading
+            ? "bg-gray-600 cursor-not-allowed"
+            : "bg-blue-500 hover:bg-blue-600"
+        }`}
       >
-        Upload
+        {uploading ? "Uploading..." : "Upload"}
       </button>
-      {uploadStatus && <p className="mt-4">{uploadStatus}</p>}
+      {successMessage && <p className="mt-4 text-green-500">{successMessage}</p>}
     </div>
   );
 };
