@@ -1,8 +1,7 @@
-// app/layout.tsx
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import React from "react";
-import NavBar from "@/components/NavBar"; // Import NavBar component
+import Sidebar from "@/components/Sidebar"; // Import Sidebar component
 
 export const metadata = {
   title: "PopReel",
@@ -14,10 +13,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <ClerkProvider>
-          {/* Navigation Bar */}
-          <NavBar />
-          {/* Main Content */}
-          <main>{children}</main>
+          <div className="flex min-h-screen">
+            <Sidebar />
+            <main className="flex-grow">{children}</main>
+          </div>
         </ClerkProvider>
       </body>
     </html>

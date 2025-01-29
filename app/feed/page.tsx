@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
-import { FaThumbsUp, FaCommentAlt, FaShareAlt } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
+import { FaHeart, FaCommentDots, FaShare } from "react-icons/fa";
+import Head from "next/head";
 
 interface Video {
   id: number;
@@ -9,10 +12,12 @@ interface Video {
   title: string;
   description: string;
   likes: number;
-  comments: string[]; 
+  comments: { text: string; timestamp: string }[];
 }
 
 const FeedPage: React.FC = () => {
+  const { isSignedIn } = useAuth();
+  const router = useRouter();
   const [videos, setVideos] = useState<Video[]>([
     {
       id: 1,
@@ -20,9 +25,23 @@ const FeedPage: React.FC = () => {
       title: "Sample Video",
       description: "This is a test video uploaded to S3.",
       likes: 0,
-      comments: [], 
+      comments: [],
+    },
+    {
+      id: 2,
+      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/devlet.mp4", 
+      title: "Another Video",
+      description: "This is another test video uploaded to S3.",
+      likes: 0,
+      comments: [],
     },
   ]);
+
+  useEffect(() => {
+    if (!isSignedIn) {
+      router.push("/sign-in");
+    }
+  }, [isSignedIn, router]);
 
   const handleLike = (id: number) => {
     setVideos((prevVideos) =>
@@ -35,10 +54,14 @@ const FeedPage: React.FC = () => {
   const handleComment = (id: number) => {
     const comment = prompt("Enter your comment:");
     if (comment) {
+      const timestamp = new Date().toLocaleString();
       setVideos((prevVideos) =>
         prevVideos.map((video) =>
           video.id === id
-            ? { ...video, comments: [...video.comments, comment] }
+            ? {
+                ...video,
+                comments: [...video.comments, { text: comment, timestamp }],
+              }
             : video
         )
       );
@@ -52,60 +75,58 @@ const FeedPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4 space-y-6">
-      <h1 className="text-2xl font-bold">Feed</h1>
-      {videos.map((video) => (
-        <div
-          key={video.id}
-          className="max-w-md w-full shadow-lg rounded-lg overflow-hidden mb-6"
-        >
-          <video
-            src={video.url}
-            controls
-            className="w-full h-auto"
-            preload="auto"
-          />
-          <div className="p-4">
-            <h2 className="text-lg font-semibold">{video.title}</h2>
-            <p className="text-sm text-gray-600">{video.description}</p>
-            <div className="flex space-x-6 mt-4">
+    <>
+      <Head>
+        <title>PopReel | Feed</title>
+        <meta name="description" content="Explore the latest videos on PopReel" />
+      </Head>
+      <div className="flex flex-col items-center p-4 space-y-6 bg-gray-900 min-h-screen">
+        {videos.map((video) => (
+          <div
+            key={video.id}
+            className="relative bg-black text-white max-w-md w-full shadow-lg rounded-lg overflow-hidden"
+          >
+            {/* Video Player */}
+            <video
+              src={video.url}
+              controls
+              className="w-full h-auto"
+              preload="auto"
+            />
+
+            {/* Interaction Panel */}
+            <div className="absolute bottom-2 left-0 right-0 flex justify-center space-x-8">
+              {/* Like Button */}
               <button
-                className="flex items-center space-x-2 text-blue-500 hover:underline"
+                className="flex flex-col items-center text-gray-300 hover:text-red-500"
                 onClick={() => handleLike(video.id)}
               >
-                <FaThumbsUp /> <span>Like ({video.likes})</span>
+                <FaHeart className="text-2xl" />
+                <span className="text-sm">{video.likes}</span>
               </button>
+
+              {/* Comment Button */}
               <button
-                className="flex items-center space-x-2 text-blue-500 hover:underline"
+                className="flex flex-col items-center text-gray-300 hover:text-blue-500"
                 onClick={() => handleComment(video.id)}
               >
-                <FaCommentAlt /> <span>Comment</span>
+                <FaCommentDots className="text-2xl" />
+                <span className="text-sm">{video.comments.length}</span>
               </button>
+
+              {/* Share Button */}
               <button
-                className="flex items-center space-x-2 text-blue-500 hover:underline"
+                className="flex flex-col items-center text-gray-300 hover:text-green-500"
                 onClick={() => handleShare(video.id)}
               >
-                <FaShareAlt /> <span>Share</span>
+                <FaShare className="text-2xl" />
+                <span className="text-sm">Share</span>
               </button>
             </div>
-            <div className="mt-4">
-              <h3 className="text-sm font-semibold">Comments:</h3>
-              {video.comments.length > 0 ? (
-                <ul className="text-sm text-gray-700 space-y-2">
-                  {video.comments.map((comment, index) => (
-                    <li key={index} className="border-b pb-1">
-                      {comment}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-sm text-gray-500">No comments yet.</p>
-              )}
-            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </>
   );
 };
 
