@@ -29,13 +29,6 @@ const HomePage: React.FC = () => {
       >
         Get Started
       </button>
-
-      {/* Footer Section */}
-      <div className="absolute bottom-4 text-sm text-gray-500">
-        <p>
-          © {new Date().getFullYear()} PopReel. All rights reserved.
-        </p>
-      </div>
     </div>
   );
 };
