@@ -21,7 +21,7 @@ const FeedPage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([
     {
       id: 1,
-      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/IMG_0946.mp4",
+      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/mrbeast.mp4",
       title: "Sample Video",
       description: "This is a test video uploaded to S3.",
       likes: 0,
@@ -29,6 +29,14 @@ const FeedPage: React.FC = () => {
     },
     {
       id: 2,
+      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/IMG_0946.mp4",
+      title: "Sample Video",
+      description: "This is a test video uploaded to S3.",
+      likes: 0,
+      comments: [],
+    },
+    {
+      id: 3,
       url: "https://popreel-videos.s3.us-east-2.amazonaws.com/devlet.mp4", 
       title: "Another Video",
       description: "This is another test video uploaded to S3.",

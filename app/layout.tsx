@@ -1,20 +1,19 @@
+"use client"; 
 import { ClerkProvider } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
+import Sidebar from "@/components/Sidebar";
 import "./globals.css";
-import React from "react";
-import Sidebar from "@/components/Sidebar"; // Import Sidebar component
-
-export const metadata = {
-  title: "PopReel",
-  description: "Your platform for sharing amazing content.",
-};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
   return (
     <html lang="en">
       <body>
         <ClerkProvider>
           <div className="flex min-h-screen">
-            <Sidebar />
+            {!isHome && <Sidebar />}
             <main className="flex-grow">{children}</main>
           </div>
         </ClerkProvider>

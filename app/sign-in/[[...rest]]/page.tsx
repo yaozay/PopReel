@@ -1,4 +1,5 @@
 // app/sign-in/[[...rest]]/page.tsx
+
 import { SignIn } from "@clerk/nextjs";
 
 export default function Page() {
@@ -16,7 +17,8 @@ export default function Page() {
         path="/sign-in"
         routing="path"
         signUpUrl="/sign-up"
-        
+        afterSignInUrl="/feed"   
+        afterSignUpUrl="/feed"  
       />
     </div>
   );

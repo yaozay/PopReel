@@ -27,20 +27,19 @@ h1, h2 {
 button {
   cursor: pointer;
 }
-@keyframes fade-in {
-  from {
+@keyframes fadeIn {
+  0% {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(10px) scale(0.9);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
-
-/*.animate-fade-in {
-  animation: fade-in 0.8s ease-in-out;
-}*/
+.animate-fadeIn {
+  animation: fadeIn 2.5s ease forwards;
+}
 html {
   scroll-behavior: smooth;
 }
