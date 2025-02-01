@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import { FaHeart, FaCommentDots, FaShare } from "react-icons/fa";
@@ -18,6 +18,8 @@ interface Video {
 const FeedPage: React.FC = () => {
   const { isSignedIn } = useAuth();
   const router = useRouter();
+
+  // Hard-coded video list, same as before
   const [videos, setVideos] = useState<Video[]>([
     {
       id: 1,
@@ -29,7 +31,7 @@ const FeedPage: React.FC = () => {
     },
     {
       id: 2,
-      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/IMG_0946.mp4",
+      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/squidgame.mp4",
       title: "Sample Video",
       description: "This is a test video uploaded to S3.",
       likes: 0,
@@ -37,7 +39,15 @@ const FeedPage: React.FC = () => {
     },
     {
       id: 3,
-      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/devlet.mp4", 
+      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/IMG_0946.mp4",
+      title: "Sample Video",
+      description: "This is a test video uploaded to S3.",
+      likes: 0,
+      comments: [],
+    },
+    {
+      id: 4,
+      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/devlet.mp4",
       title: "Another Video",
       description: "This is another test video uploaded to S3.",
       likes: 0,
@@ -45,12 +55,67 @@ const FeedPage: React.FC = () => {
     },
   ]);
 
+  // Which video is currently in the viewport (we’ll auto-play it)
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+
+  // Refs to each <video> element
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  // If user not signed in, redirect
   useEffect(() => {
     if (!isSignedIn) {
       router.push("/sign-in");
     }
   }, [isSignedIn, router]);
 
+  // IntersectionObserver: detect which video is in view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // If a video is more than 50% visible, set it as active
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            const index = Number(entry.target.getAttribute("data-index"));
+            setActiveIndex(index);
+          }
+        });
+      },
+      {
+        threshold: 0.5, // 50% of the video must be in view
+      }
+    );
+
+    // Observe each video element
+    videoRefs.current.forEach((video) => {
+      if (video) observer.observe(video);
+    });
+
+    // Cleanup
+    return () => {
+      videoRefs.current.forEach((video) => {
+        if (video) observer.unobserve(video);
+      });
+    };
+  }, []);
+
+  // Whenever activeIndex changes, play that video & pause others
+  useEffect(() => {
+    videoRefs.current.forEach((video, i) => {
+      if (!video) return;
+      if (i === activeIndex) {
+        // Attempt to play
+        video.play().catch((err) => {
+          console.warn("Auto-play blocked:", err);
+        });
+      } else {
+        // Pause other videos
+        video.pause();
+        video.currentTime = 0; // if you want them to reset to start
+      }
+    });
+  }, [activeIndex]);
+
+  // Interaction handlers (same as your original)
   const handleLike = (id: number) => {
     setVideos((prevVideos) =>
       prevVideos.map((video) =>
@@ -88,23 +153,31 @@ const FeedPage: React.FC = () => {
         <title>PopReel | Feed</title>
         <meta name="description" content="Explore the latest videos on PopReel" />
       </Head>
+
       <div className="flex flex-col items-center p-4 space-y-6 bg-gray-900 min-h-screen">
-        {videos.map((video) => (
+        {videos.map((video, index) => (
           <div
             key={video.id}
             className="relative bg-black text-white max-w-md w-full shadow-lg rounded-lg overflow-hidden"
           >
-            {/* Video Player */}
+            {/* 
+              Each video element is no longer "controls" or "autoPlay muted".
+              We'll let IntersectionObserver control when to .play() or .pause().
+            */}
             <video
+              ref={(el) => {
+                videoRefs.current[index] = el; 
+                // No return statement, so it's implicitly "void"
+              }}
+              data-index={index}
               src={video.url}
-              controls
-              className="w-full h-auto"
               preload="auto"
+              playsInline
+              className="w-full h-auto"
             />
 
             {/* Interaction Panel */}
             <div className="absolute bottom-2 left-0 right-0 flex justify-center space-x-8">
-              {/* Like Button */}
               <button
                 className="flex flex-col items-center text-gray-300 hover:text-red-500"
                 onClick={() => handleLike(video.id)}
@@ -113,7 +186,6 @@ const FeedPage: React.FC = () => {
                 <span className="text-sm">{video.likes}</span>
               </button>
 
-              {/* Comment Button */}
               <button
                 className="flex flex-col items-center text-gray-300 hover:text-blue-500"
                 onClick={() => handleComment(video.id)}
@@ -122,7 +194,6 @@ const FeedPage: React.FC = () => {
                 <span className="text-sm">{video.comments.length}</span>
               </button>
 
-              {/* Share Button */}
               <button
                 className="flex flex-col items-center text-gray-300 hover:text-green-500"
                 onClick={() => handleShare(video.id)}
