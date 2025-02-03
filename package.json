@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^5.1.6",
-    "@clerk/nextjs": "^6.10.3",
+    "@clerk/nextjs": "^6.10.6",
     "@prisma/client": "^6.2.1",
     "aws": "^0.0.3-2",
     "aws-sdk": "^2.1692.0",

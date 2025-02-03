@@ -54,15 +54,15 @@ export default async function ProfilePage() {
           {/* User Stats */}
           <div className="flex justify-around bg-gray-800 p-4 rounded-xl shadow-lg mb-6">
             <div className="text-center">
-              <span className="text-lg font-bold">123</span>
+              <span className="text-lg font-bold">0</span>
               <span className="text-gray-400 text-sm block">Followers</span>
             </div>
             <div className="text-center">
-              <span className="text-lg font-bold">45</span>
+              <span className="text-lg font-bold">1</span>
               <span className="text-gray-400 text-sm block">Following</span>
             </div>
             <div className="text-center">
-              <span className="text-lg font-bold">10</span>
+              <span className="text-lg font-bold">0</span>
               <span className="text-gray-400 text-sm block">Uploads</span>
             </div>
           </div>
@@ -70,18 +70,8 @@ export default async function ProfilePage() {
           {/* Uploaded Videos */}
           <div>
             <h2 className="text-lg font-bold mb-4">My Videos</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {Array(6)
-                .fill(0)
-                .map((_, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-700 rounded-lg w-full h-40 flex items-center justify-center"
-                  >
-                    <p className="text-gray-400 text-sm">Video {index + 1}</p>
-                  </div>
-                ))}
-            </div>
+            {/* Just display a message instead of placeholders */}
+            <p className="text-gray-400">No videos uploaded yet.</p>
           </div>
         </div>
       </div>

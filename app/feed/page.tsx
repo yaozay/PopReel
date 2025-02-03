@@ -23,7 +23,7 @@ const FeedPage: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([
     {
       id: 1,
-      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/mrbeast.mp4",
+      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/cruise.mp4",
       title: "Sample Video",
       description: "This is a test video uploaded to S3.",
       likes: 0,
@@ -31,7 +31,7 @@ const FeedPage: React.FC = () => {
     },
     {
       id: 2,
-      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/squidgame.mp4",
+      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/mrbeast.mp4",
       title: "Sample Video",
       description: "This is a test video uploaded to S3.",
       likes: 0,
@@ -39,7 +39,7 @@ const FeedPage: React.FC = () => {
     },
     {
       id: 3,
-      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/IMG_0946.mp4",
+      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/squidgame.mp4",
       title: "Sample Video",
       description: "This is a test video uploaded to S3.",
       likes: 0,
@@ -47,7 +47,15 @@ const FeedPage: React.FC = () => {
     },
     {
       id: 4,
-      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/devlet.mp4",
+      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/househ.mp4",
+      title: "Sample Video",
+      description: "This is a test video uploaded to S3.",
+      likes: 0,
+      comments: [],
+    },
+    {
+      id: 5,
+      url: "https://popreel-videos.s3.us-east-2.amazonaws.com/monkey.mp4",
       title: "Another Video",
       description: "This is another test video uploaded to S3.",
       likes: 0,
@@ -115,7 +123,7 @@ const FeedPage: React.FC = () => {
     });
   }, [activeIndex]);
 
-  // Interaction handlers (same as your original)
+  // Simple local like function (no API call)
   const handleLike = (id: number) => {
     setVideos((prevVideos) =>
       prevVideos.map((video) =>
@@ -124,6 +132,7 @@ const FeedPage: React.FC = () => {
     );
   };
 
+  // Same comment & share as before
   const handleComment = (id: number) => {
     const comment = prompt("Enter your comment:");
     if (comment) {
@@ -160,14 +169,9 @@ const FeedPage: React.FC = () => {
             key={video.id}
             className="relative bg-black text-white max-w-md w-full shadow-lg rounded-lg overflow-hidden"
           >
-            {/* 
-              Each video element is no longer "controls" or "autoPlay muted".
-              We'll let IntersectionObserver control when to .play() or .pause().
-            */}
             <video
               ref={(el) => {
-                videoRefs.current[index] = el; 
-                // No return statement, so it's implicitly "void"
+                videoRefs.current[index] = el;
               }}
               data-index={index}
               src={video.url}
