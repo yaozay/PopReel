@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/db"; // Ensure this points to your Prisma setup
+import prisma from "@/lib/db"; 
 
 export async function GET() {
   try {
-    const videos = await prisma.video.findMany(); // Fetch videos from your database
+    const videos = await prisma.video.findMany(); 
     return NextResponse.json(videos);
   } catch (error) {
     console.error("Error fetching videos:", error);

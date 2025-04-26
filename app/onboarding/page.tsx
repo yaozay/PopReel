@@ -1,7 +1,6 @@
-// app/onboarding/page.tsx
 import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server"; // Import from "@clerk/nextjs"
-import prisma from "@/lib/db"; // Your Prisma client
+import { auth } from "@clerk/nextjs/server";
+import prisma from "@/lib/db"; 
 import React from "react";
 
 export default async function OnboardingPage() {
@@ -20,7 +19,7 @@ export default async function OnboardingPage() {
 
   // Server Action
   async function handleOnboarding(formData: FormData) {
-    "use server"; // This makes it a server action
+    "use server"; 
 
     const { userId } = await auth();
     if (!userId) {
@@ -29,20 +28,16 @@ export default async function OnboardingPage() {
 
     const username = formData.get("username") as string;
     const bio = formData.get("bio") as string;
-
-    // Check if the user exists
     const existingUser = await prisma.user.findUnique({
       where: { clerkId: userId },
     });
 
     if (existingUser) {
-      // Update the user if they already exist
       await prisma.user.update({
         where: { clerkId: userId },
         data: { username, bio },
       });
     } else {
-      // Create a new user record if none exists
       await prisma.user.create({
         data: {
           clerkId: userId,
@@ -83,7 +78,6 @@ export default async function OnboardingPage() {
             />
           </div>
 
-          {/* Short Bio Input */}
           <div>
             <label
               htmlFor="bio"
@@ -99,8 +93,6 @@ export default async function OnboardingPage() {
               className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
-
-          {/* Submit Button */}
           <div>
             <button
               type="submit"

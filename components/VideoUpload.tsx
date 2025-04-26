@@ -11,13 +11,12 @@ export default function VideoUpload() {
     setUploading(true);
 
     try {
-      // 1. Request a presigned URL
       const fileName = encodeURIComponent(file.name);
       const fileType = encodeURIComponent(file.type);
       const res = await fetch(`/api/uploadurl?fileName=${fileName}&fileType=${fileType}`);
       const { uploadUrl } = await res.json();
 
-      // 2. Upload the file to S3
+      //uploading the file to s3
       await fetch(uploadUrl, {
         method: "PUT",
         headers: {
@@ -25,8 +24,6 @@ export default function VideoUpload() {
         },
         body: file,
       });
-
-      // 3. Display success message
       alert("Upload successful!");
     } catch (error) {
       console.error("Upload failed:", error);
@@ -35,7 +32,6 @@ export default function VideoUpload() {
       setUploading(false);
     }
   }
-
   return (
     <div>
       <h1>Upload a Video</h1>

@@ -5,30 +5,27 @@ import { redirect } from "next/navigation";
 export default async function ProfilePage() {
   const { userId } = await auth();
 
-  // Redirect to sign-in if the user is not authenticated
   if (!userId) {
     redirect("/sign-in");
   }
 
-  // Fetch user details from the database
   const user = await prisma.user.findUnique({
     where: { clerkId: userId },
   });
 
-  // Redirect to onboarding if the user or username is not set
+
   if (!user || !user.username) {
     redirect("/onboarding");
   }
 
   return (
     <div className="flex bg-gray-900 text-white min-h-screen">
-      {/* Sidebar is handled globally in layout */}
+
       <div className="flex-grow p-6">
         <div className="max-w-4xl mx-auto">
-          {/* Profile Header */}
           <div className="relative bg-gray-800 p-6 rounded-xl shadow-lg mb-6">
             <div className="flex items-center space-x-4">
-              {/* User Avatar */}
+
               {user.avatarUrl ? (
                 <img
                   src={user.avatarUrl}
@@ -51,7 +48,6 @@ export default async function ProfilePage() {
             <p className="mt-4 text-sm">{user.bio || "Add your bio here!"}</p>
           </div>
 
-          {/* User Stats */}
           <div className="flex justify-around bg-gray-800 p-4 rounded-xl shadow-lg mb-6">
             <div className="text-center">
               <span className="text-lg font-bold">0</span>
@@ -67,10 +63,9 @@ export default async function ProfilePage() {
             </div>
           </div>
 
-          {/* Uploaded Videos */}
+
           <div>
             <h2 className="text-lg font-bold mb-4">My Videos</h2>
-            {/* Just display a message instead of placeholders */}
             <p className="text-gray-400">No videos uploaded yet.</p>
           </div>
         </div>

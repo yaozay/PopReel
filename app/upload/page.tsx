@@ -24,22 +24,18 @@ export default function UploadPage() {
     try {
       setUploading(true);
 
-      // Prepare form data
       const formData = new FormData();
       formData.append("video", file);
 
-      // POST to your upload API route (e.g. /api/upload)
       const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
-        // DO NOT set "Content-Type" yourself; FormData does it automatically
+      
       });
 
       if (response.ok) {
         setSuccessMessage("Upload successful!");
 
-        // If you want to show the new video on your feed,
-        // either fetch fresh data in your feed page or redirect:
         router.push("/feed");
       } else {
         console.error("Upload failed:", response.statusText);
